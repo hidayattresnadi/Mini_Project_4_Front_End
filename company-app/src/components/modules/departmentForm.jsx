@@ -4,9 +4,9 @@ import Button from '../elements/button';
 import { useNavigate } from 'react-router-dom';
 import SelectField from '../widgets/selectField';
 
-const DepartmentForm = ({ addDepartment, updateDepartment, editingDepartment,employees, errors }) => {
+const DepartmentForm = ({ addDepartment, updateDepartment, editingDepartment,employees, errors, refresh, setRefresh }) => {
     const navigate = useNavigate();
-    const [shouldNavigate, setShouldNavigate] =useState();
+    const [shouldNavigate, setShouldNavigate] =useState(false);
     const [formData, setFormData] = useState({
         deptName: '',
         mgrEmpNo: ''
@@ -26,14 +26,6 @@ const DepartmentForm = ({ addDepartment, updateDepartment, editingDepartment,emp
         }
     }, [editingDepartment]);
 
-    
-    useEffect(() => {
-        if (shouldNavigate) {
-            navigate('/departments');
-            setShouldNavigate(false);
-        }
-    }, [shouldNavigate]); 
-
     const handleInputChange = (e) => {
         const { id, name, value, type, checked } = e.target;
         setFormData({
@@ -44,29 +36,33 @@ const DepartmentForm = ({ addDepartment, updateDepartment, editingDepartment,emp
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // setLoading(true);
-
-        if (editingDepartment) {
-            const result = await updateDepartment(formData);
-            // setLoading(false);
-            if (!errors && Object.keys(result).length === 0) {
-                setFormData({
-                    deptName: '',
-                    mgrEmpNo: ''
-                });
-                setShouldNavigate(true);
+        try {
+            if (editingDepartment) {
+                const result = await updateDepartment(formData);
+                if (!errors && Object.keys(result).length === 0) {
+                    setFormData({ deptName: '', mgrEmpNo: '' });
+                    setRefresh(!refresh);
+                    setShouldNavigate(true);
+                }
+            } else {
+                const result = await addDepartment(formData);
+                if (!errors && Object.keys(result).length === 0) {
+                    setFormData({ deptName: '', mgrEmpNo: '' });
+                    setRefresh(!refresh);
+                    setShouldNavigate(true);
+                }
             }
-        } else {
-            const result = await addDepartment(formData);
-            if (!errors && Object.keys(result).length === 0) {
-                setFormData({
-                    deptName: '',
-                    mgrEmpNo: ''
-                });
-                setShouldNavigate(true);
-            }
+        } catch (error) {
+            console.error(error);
         }
     };
+    
+    useEffect(() => {
+        if (shouldNavigate) {
+            navigate('/departments');
+            setShouldNavigate(false); // Reset state setelah navigasi
+        }
+    }, [shouldNavigate, navigate]);
 
     return (
         <>

@@ -53,10 +53,10 @@ function WorksOnFormPage({ setEmployees, employees, projects, setProjects, editi
     useEffect(() => {
         const loadData = async () => {
             try {
-                const ProjectResponse = await axios.get(`http://localhost:5227/Project?pageNumber=1`);
+                const ProjectResponse = await axios.get(`http://localhost:5227/Project/select`);
                 setProjects(ProjectResponse.data);
 
-                const EmployeeResponse = await axios.get(`http://localhost:5227/Employee?pageNumber=1`);
+                const EmployeeResponse = await axios.get(`http://localhost:5227/Employee/select`);
                 setEmployees(EmployeeResponse.data);
                 if (!id) {
                     setLoading(false);

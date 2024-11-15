@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import LoadingSpinner from '../elements/loading';
 
-function EmployeeDetailPage({ employees, projects, departments, worksOns, columns, onEdit, onDelete }) {
+function EmployeeDetailPage({ setRefresh, refresh, setWorksOns, worksOns, columns }) {
     const { id } = useParams();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -37,16 +37,20 @@ function EmployeeDetailPage({ employees, projects, departments, worksOns, column
         return <div>{error}</div>; 
     }
     
-    // const worksOnEmployees = worksOns.filter((worksOn) => worksOn.empNo === id);
     return (
         <>
             <DetailLayout title="Employee Details">
                     <EmployeeDetailCard detailEmployee={employeeData} />
             </DetailLayout>
 
-            {/* <WorksOnsPage worksOns={worksOnEmployees} projects={projects} employees={employees} columns={columns} onEdit={onEdit} onDelete={onDelete} /> */}
+            <WorksOnsPage
+            columns = { columns } 
+            worksOns ={worksOns} 
+            setWorksOns ={setWorksOns} 
+            refresh ={refresh} 
+            setRefresh ={setRefresh}
+            />
         </>
-
     )
 }
 

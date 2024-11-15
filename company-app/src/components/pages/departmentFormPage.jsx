@@ -54,7 +54,7 @@ function DepartmentFormPage({ setEmployees, setErrors, editingDepartment,employe
     useEffect(() => {
         const loadData = async () => {
             try {
-                const EmployeeResponse = await axios.get(`http://localhost:5227/Employee?pageNumber=1`);
+                const EmployeeResponse = await axios.get(`http://localhost:5227/Employee/select`);
                 setEmployees(EmployeeResponse.data);
                 if (!id) {
                     setLoading(false);
@@ -84,6 +84,8 @@ function DepartmentFormPage({ setEmployees, setErrors, editingDepartment,employe
                 updateDepartment={updateDepartment}
                 editingDepartment={editingDepartment}
                 errors={errors}
+                refresh={refresh}
+                setRefresh={setRefresh}
             />
         </FormLayout>
     )

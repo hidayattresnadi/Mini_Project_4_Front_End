@@ -1,12 +1,11 @@
 import { useParams } from 'react-router-dom';
 import DetailLayout from '../templates/detailLayout';
 import ProjectDetailCard from '../modules/projectCard';
-import WorksOnsPage from './WorksOnsPage';
 import LoadingSpinner from '../elements/loading';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function ProjectDetailPage({ projects, departments, worksOns, employees, columns, onEdit, onDelete }) {
+function ProjectDetailPage() {
     const { id } = useParams();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -43,7 +42,6 @@ function ProjectDetailPage({ projects, departments, worksOns, employees, columns
             detailProject={projectData}
         />
         </DetailLayout>
-        {/* <WorksOnsPage worksOns={worksOnProjects} projects={projects} employees={employees} columns={columns} onEdit={onEdit} onDelete={onDelete} /> */}
         </>
         
 

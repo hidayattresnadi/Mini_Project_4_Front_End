@@ -63,7 +63,7 @@ const EmployeeForm = ({ addEmployee, updateEmployee, editingEmployee, department
 
         if (editingEmployee) {
             const result = await updateEmployee(formData);
-            if (!errors && Object.keys(result).length === 0 && result) {
+            if (!errors && Object.keys(result).length === 0) {
                 setFormData({
                     fname: '',
                     lname: '',
@@ -86,7 +86,7 @@ const EmployeeForm = ({ addEmployee, updateEmployee, editingEmployee, department
                     dob: '',
                     position: '',
                     deptNo: ''
-                });
+                })
                 setShouldNavigate(true);
             }
         }

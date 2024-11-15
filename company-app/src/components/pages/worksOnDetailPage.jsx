@@ -5,9 +5,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import LoadingSpinner from '../elements/loading';
 
-function WorksOnDetailPage({ worksOns, employees, projects }) {
+function WorksOnDetailPage() {
     const { empNo, projNo } = useParams();
-    const { id } = useParams();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [worksOnData,setWorksOnData] = useState();

@@ -54,7 +54,7 @@ function EmployeeFormPage({ setErrors, setEditingEmployee, setDepartments, editi
     useEffect(() => {
         const loadData = async () => {
             try {
-                const DepartmentResponse = await axios.get(`http://localhost:5227/Department?pageNumber=1`);
+                const DepartmentResponse = await axios.get(`http://localhost:5227/Department/select`);
                 setDepartments(DepartmentResponse.data);
                 if (!id) {
                     setLoading(false);

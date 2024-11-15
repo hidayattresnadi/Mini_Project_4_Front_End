@@ -6,11 +6,11 @@ import LoadingSpinner from '../elements/loading';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function DepartmentDetailPage({ departments, employees, onEdit, onDelete, columns }) {
+function DepartmentDetailPage({ setEmployees, employees, columnsTableEmployees, refresh, setRefresh }) {
     const { id } = useParams();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [departmentData,setDepartmentData] = useState();
+    const [departmentData, setDepartmentData] = useState();
 
     useEffect(() => {
         const loadData = async () => {
@@ -31,18 +31,24 @@ function DepartmentDetailPage({ departments, employees, onEdit, onDelete, column
     }, [id, setDepartmentData]);
 
     if (loading) {
-        return <LoadingSpinner/>; 
+        return <LoadingSpinner />;
     }
 
     if (error) {
-        return <div>{error}</div>; 
+        return <div>{error}</div>;
     }
     return (
         <>
             <DetailLayout title={'Department Details'}>
                 <DepartmentDetailCard detailDepartment={departmentData} />
             </DetailLayout>
-            {/* <EmployeesPage employees={departmentEmployees} departments={departments} columns={columns} onEdit={onEdit} onDelete={onDelete} /> */}
+            <EmployeesPage
+                employees={employees}
+                setEmployees={setEmployees}
+                columns={columnsTableEmployees}
+                refresh={refresh}
+                setRefresh={setRefresh}
+            />
         </>
 
 
