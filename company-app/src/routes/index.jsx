@@ -27,7 +27,6 @@ const AppRouter = () => {
     const [projects, setProjects] = useState();
     const [worksOns, setWorksOns] = useState();
     const [refresh, setRefresh] = useState(false);
-
     const [editingEmployee, setEditingEmployee] = useState(null);
     const [editingDepartment, setEditingDepartment] = useState(null);
     const [editingProject, setEditingProject] = useState(null);
@@ -71,8 +70,6 @@ const AppRouter = () => {
                             setDepartments={setDepartments}
                             departments={departments}
                             errors={errors}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
                         />
                     ),
                 },
@@ -86,8 +83,6 @@ const AppRouter = () => {
                             departments={departments}
                             errors={errors}
                             setErrors={setErrors}
-                            setRefresh={setRefresh}
-                            refresh={refresh}
                         />
                     ),
                 },
@@ -124,8 +119,6 @@ const AppRouter = () => {
                             setEmployees={setEmployees}
                             errors={errors}
                             setErrors={setErrors}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
                         />
                     ),
                 },
@@ -139,8 +132,6 @@ const AppRouter = () => {
                             setEmployees={setEmployees}
                             errors={errors}
                             setErrors={setErrors}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
                         />
                     ),
                 },
@@ -176,8 +167,6 @@ const AppRouter = () => {
                             departments={departments}
                             errors={errors}
                             setErrors={setErrors}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
                         />
                     ),
                 },
@@ -191,8 +180,6 @@ const AppRouter = () => {
                             setEditingProject={setEditingProject}
                             errors={errors}
                             setErrors={setErrors}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
                         />
                     ),
                 },
@@ -230,8 +217,6 @@ const AppRouter = () => {
                             setProjects={setProjects}
                             errors={errors}
                             setErrors={setErrors}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
                         />
                     ),
                 },
@@ -247,8 +232,6 @@ const AppRouter = () => {
                             setEditingWorksOn={setEditingWorksOn}
                             errors={errors}
                             setErrors={setErrors}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
                         />
                     ),
                 },

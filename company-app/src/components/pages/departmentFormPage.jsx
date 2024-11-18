@@ -2,14 +2,16 @@ import axios from 'axios';
 import LoadingSpinner from '../elements/loading';
 import DepartmentForm from '../modules/departmentForm';
 import FormLayout from '../templates/FormLayout';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { failedSwal, successSwal, validateDepartment } from '../../helper';
 
-function DepartmentFormPage({ setEmployees, setErrors, editingDepartment,employees, errors, setRefresh, refresh, setEditingDepartment }) {
+function DepartmentFormPage({ setEmployees, setErrors, editingDepartment,employees, errors, setEditingDepartment }) {
+    const navigate = useNavigate();
     const { id } = useParams();
     const [loading, setLoading] = useState(true);
     const [errorStatus, setErrorStatus] = useState();
+    const [shouldNavigate, setShouldNavigate]=useState();
 
     const addDepartment = async (department) => {
         try {
@@ -18,7 +20,6 @@ function DepartmentFormPage({ setEmployees, setErrors, editingDepartment,employe
             if (Object.keys(listErrors).length === 0) {
                 await axios.post('http://localhost:5227/Department', department)
                 successSwal('Department Added successfully');
-                setRefresh(!refresh);
             }
             return listErrors;
 
@@ -38,7 +39,6 @@ function DepartmentFormPage({ setEmployees, setErrors, editingDepartment,employe
                 department.empNo = parseInt(department.empNo);
                 await axios.put(`http://localhost:5227/Department/${id}`, department)
                 successSwal('Employee Edited successfully');
-                setRefresh(!refresh);
                 setEditingDepartment(null);
             }
             return listErrors;
@@ -74,6 +74,12 @@ function DepartmentFormPage({ setEmployees, setErrors, editingDepartment,employe
         loadData();
     }, [id, setEmployees, setEditingDepartment, setErrorStatus]);
 
+    useEffect(()=>{
+        if (shouldNavigate) {
+            navigate('/departments');
+        }
+    }, [shouldNavigate, navigate])
+
     if (loading) return <LoadingSpinner />;
     if (errorStatus) return <p>Error loading employees</p>;
     return (
@@ -84,8 +90,8 @@ function DepartmentFormPage({ setEmployees, setErrors, editingDepartment,employe
                 updateDepartment={updateDepartment}
                 editingDepartment={editingDepartment}
                 errors={errors}
-                refresh={refresh}
-                setRefresh={setRefresh}
+                shouldNavigate={shouldNavigate}
+                setShouldNavigate={setShouldNavigate}
             />
         </FormLayout>
     )

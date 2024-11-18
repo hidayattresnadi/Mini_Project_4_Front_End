@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import InputField from '../widgets/inputField';
 import Button from '../elements/button';
-import { useNavigate } from 'react-router-dom';
 import SelectField from '../widgets/selectField';
 
-const WorksOnForm = ({ addWorksOn, employees, projects, updateWorksOn, editingWorksOn, errors }) => {
-    const navigate = useNavigate();
-    const [shouldNavigate, setShouldNavigate] =useState();
+const WorksOnForm = ({ shouldNavigate, setShouldNavigate, addWorksOn, employees, projects, updateWorksOn, editingWorksOn, errors }) => {
     const [formData, setFormData] = useState({
         projNo: '',
         empNo: '',
@@ -32,14 +29,6 @@ const WorksOnForm = ({ addWorksOn, employees, projects, updateWorksOn, editingWo
         }
     }, [editingWorksOn]);
 
-    
-    useEffect(() => {
-        if (shouldNavigate) {
-            navigate('/assignments');
-            setShouldNavigate(false);
-        }
-    }, [shouldNavigate]); 
-
     const handleInputChange = (e) => {
         const { id, name, value, type, checked } = e.target;
         setFormData({
@@ -53,26 +42,25 @@ const WorksOnForm = ({ addWorksOn, employees, projects, updateWorksOn, editingWo
 
         if (editingWorksOn) {
             const result = await updateWorksOn(formData);
-            if (!errors && Object.keys(result).length === 0) {
+            if (Object.keys(result).length === 0) {
                 setFormData({
                     projNo: '',
                     empNo: '',
                     hoursWorked: '',
                     dateWorked: ''
                 });
-                setShouldNavigate(true)
+                setShouldNavigate(!shouldNavigate)
             }
         } else {
             const result = await addWorksOn(formData);
-            if (!errors && Object.keys(result).length === 0) {
-                navigate('/assignments');
+            if (Object.keys(result).length === 0) {
                 setFormData({
                     projNo: '',
                     empNo: '',
                     hoursWorked: '',
                     dateWorked: ''
                 });
-                setShouldNavigate(true)
+                setShouldNavigate(!shouldNavigate)
             }
         }
     };

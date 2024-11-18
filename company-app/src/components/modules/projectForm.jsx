@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import InputField from '../widgets/inputField';
 import Button from '../elements/button';
-import { useNavigate } from 'react-router-dom';
 import SelectField from '../widgets/selectField';
 
-const ProjectForm = ({ addProject, departments, updateProject, editingProject, errors }) => {
-    const navigate = useNavigate();
-    const [shouldNavigate, setShouldNavigate] =useState();
+const ProjectForm = ({ addProject, departments, updateProject, editingProject, errors, shouldNavigate,setShouldNavigate }) => {
     const [formData, setFormData] = useState({
         projName: '',
         deptNo: ''
@@ -26,13 +23,6 @@ const ProjectForm = ({ addProject, departments, updateProject, editingProject, e
         }
     }, [editingProject]);
 
-    useEffect(() => {
-        if (shouldNavigate) {
-            navigate('/projects');
-            setShouldNavigate(false);
-        }
-    }, [shouldNavigate]); 
-
     const handleInputChange = (e) => {
         const { id, name, value, type, checked } = e.target;
         setFormData({
@@ -46,22 +36,21 @@ const ProjectForm = ({ addProject, departments, updateProject, editingProject, e
 
         if (editingProject) {
             const result = await updateProject(formData);
-            if (!errors && Object.keys(result).length === 0) {
+            if (Object.keys(result).length === 0) {
                 setFormData({
                     projName: '',
                     deptNo: ''
                 });
-                setShouldNavigate(true)
+                setShouldNavigate(!shouldNavigate)
             }
         } else {
             const result = await addProject(formData);
-            if (!errors && Object.keys(result).length === 0) {
-                navigate('/projects');
+            if (Object.keys(result).length === 0) {
                 setFormData({
                     projName: '',
                     deptNo: ''
                 });
-                setShouldNavigate(true)
+                setShouldNavigate(!shouldNavigate)
             }
         }
     };

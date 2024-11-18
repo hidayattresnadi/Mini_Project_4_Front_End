@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../elements/loading';
 import ProjectForm from '../modules/projectForm';
 import FormLayout from '../templates/FormLayout';
@@ -6,10 +6,12 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { failedSwal, successSwal, validateProject } from '../../helper';
 
-function ProjectFormPage({ setRefresh, refresh, setErrors, departments, editingProject, setEditingProject, errors, setDepartments }) {
+function ProjectFormPage({ setErrors, departments, editingProject, setEditingProject, errors, setDepartments }) {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [errorStatus, setErrorStatus] = useState();
+    const [shouldNavigate, setShouldNavigate] = useState();
 
     const addProject = async (project) => {
         try {
@@ -18,7 +20,6 @@ function ProjectFormPage({ setRefresh, refresh, setErrors, departments, editingP
             if (Object.keys(listErrors).length === 0) {
                 await axios.post('http://localhost:5227/Project', project)
                 successSwal('Project Added successfully');
-                setRefresh(!refresh);
             }
             return listErrors;
 
@@ -37,7 +38,6 @@ function ProjectFormPage({ setRefresh, refresh, setErrors, departments, editingP
             if (Object.keys(listErrors).length === 0) {
                 await axios.put(`http://localhost:5227/Project/${id}`, project)
                 successSwal('Project Edited successfully');
-                setRefresh(!refresh);
                 setEditingProject(null);
             }
             return listErrors;
@@ -73,6 +73,12 @@ function ProjectFormPage({ setRefresh, refresh, setErrors, departments, editingP
         loadData();
     }, [id, setDepartments, setEditingProject, setErrorStatus]);
 
+    useEffect(()=>{
+        if (shouldNavigate) {
+            navigate('/projects');
+        }
+    }, [shouldNavigate, navigate])
+
     if (loading) return <LoadingSpinner />;
     if (errorStatus) return <p>Error loading projects</p>;
     return (
@@ -82,7 +88,9 @@ function ProjectFormPage({ setRefresh, refresh, setErrors, departments, editingP
                 departments={departments}  
                 updateProject={updateProject} 
                 editingProject={editingProject}  
-                errors={errors} 
+                errors={errors}
+                shouldNavigate={shouldNavigate}
+                setShouldNavigate={setShouldNavigate} 
             />
         </FormLayout>
     )

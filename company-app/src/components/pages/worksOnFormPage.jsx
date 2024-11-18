@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../elements/loading';
 import WorksOnForm from '../modules/worksOnForm';
 import FormLayout from '../templates/FormLayout';
@@ -6,8 +6,10 @@ import { useEffect, useState } from 'react';
 import { failedSwal, successSwal, validateWorksOn } from '../../helper';
 import axios from 'axios';
 
-function WorksOnFormPage({ setEmployees, employees, projects, setProjects, editingWorksOn,setEditingWorksOn, errors, setErrors, setRefresh, refresh }) {
+function WorksOnFormPage({ setEmployees, employees, projects, setProjects, editingWorksOn,setEditingWorksOn, errors, setErrors }) {
     const { id } = useParams();
+    const navigate = useNavigate();
+    const [shouldNavigate, setShouldNavigate] = useState();
     const [loading, setLoading] = useState(true);
     const [errorStatus, setErrorStatus] = useState();
 
@@ -18,7 +20,6 @@ function WorksOnFormPage({ setEmployees, employees, projects, setProjects, editi
             if (Object.keys(listErrors).length === 0) {
                 await axios.post('http://localhost:5227/WorksOn', worksOn)
                 successSwal('WorksOn Added successfully');
-                setRefresh(!refresh);
             }
             return listErrors;
 
@@ -37,7 +38,6 @@ function WorksOnFormPage({ setEmployees, employees, projects, setProjects, editi
             if (Object.keys(listErrors).length === 0) {
                 await axios.put(`http://localhost:5227/WorksOn/${id}`, worksOn)
                 successSwal('WorksOn Edited successfully');
-                setRefresh(!refresh);
                 setEditingWorksOn(null);
             }
             return listErrors;
@@ -77,10 +77,16 @@ function WorksOnFormPage({ setEmployees, employees, projects, setProjects, editi
         loadData();
     }, [id, setProjects, setEmployees, setEditingWorksOn, setErrorStatus]);
 
+    useEffect(()=>{
+        if (shouldNavigate) {
+            navigate('/assignments');
+        }
+    }, [shouldNavigate, navigate])
+
+
+
     if (loading) return <LoadingSpinner />;
     if (errorStatus) return <p>Error loading projects</p>;
-
-
 
     return (
         <FormLayout title={editingWorksOn ? "Form to Update Works On" : "Form to Add Works On"}>
@@ -90,7 +96,9 @@ function WorksOnFormPage({ setEmployees, employees, projects, setProjects, editi
                 projects={projects} 
                 updateWorksOn={updateWorksOn} 
                 editingWorksOn={editingWorksOn}  
-                errors={errors} 
+                errors={errors}
+                setShouldNavigate={setShouldNavigate}
+                shouldNavigate={shouldNavigate} 
             />
         </FormLayout>
     )

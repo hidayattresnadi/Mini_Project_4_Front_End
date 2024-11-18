@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react';
 import InputField from '../widgets/inputField';
 import Button from '../elements/button';
-import { useNavigate } from 'react-router-dom';
 import RadioGroup from './radioGroup';
 import LabeledTextArea from '../widgets/labeledTextArea';
 import SelectField from '../widgets/selectField';
 
-const EmployeeForm = ({ addEmployee, updateEmployee, editingEmployee, departments, errors }) => {
-    const navigate = useNavigate();
-    const [shouldNavigate, setShouldNavigate] =useState();
+const EmployeeForm = ({ addEmployee, updateEmployee, editingEmployee, departments, errors, shouldNavigate, setShouldNavigate }) => {
     const [formData, setFormData] = useState({
         fname: '',
         lname: '',
@@ -43,13 +40,6 @@ const EmployeeForm = ({ addEmployee, updateEmployee, editingEmployee, department
         }
     }, [editingEmployee]);
 
-    useEffect(() => {
-        if (shouldNavigate) {
-            navigate('/employees');
-            setShouldNavigate(false);
-        }
-    }, [shouldNavigate]); 
-
     const handleInputChange = (e) => {
         const { id, name, value, type, checked } = e.target;
         setFormData({
@@ -62,22 +52,8 @@ const EmployeeForm = ({ addEmployee, updateEmployee, editingEmployee, department
         e.preventDefault();
 
         if (editingEmployee) {
-            const result = await updateEmployee(formData);
-            if (!errors && Object.keys(result).length === 0) {
-                setFormData({
-                    fname: '',
-                    lname: '',
-                    sex: '',
-                    address: '',
-                    dob: '',
-                    position: '',
-                    deptNo: ''
-                });
-                setShouldNavigate(true);
-            }
-        } else {
-            const result = await addEmployee(formData);
-            if (!errors && Object.keys(result).length === 0 ) {
+            const result = await updateEmployee(formData)
+            if (Object.keys(result).length === 0) {
                 setFormData({
                     fname: '',
                     lname: '',
@@ -87,7 +63,21 @@ const EmployeeForm = ({ addEmployee, updateEmployee, editingEmployee, department
                     position: '',
                     deptNo: ''
                 })
-                setShouldNavigate(true);
+                setShouldNavigate(!shouldNavigate);
+            }
+        } else {
+            const result = await addEmployee(formData);
+            if (Object.keys(result).length === 0 ) {
+                setFormData({
+                    fname: '',
+                    lname: '',
+                    sex: '',
+                    address: '',
+                    dob: '',
+                    position: '',
+                    deptNo: ''
+                })
+                setShouldNavigate(!shouldNavigate)
             }
         }
     };

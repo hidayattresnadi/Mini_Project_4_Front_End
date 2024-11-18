@@ -3,12 +3,14 @@ import FormLayout from '../templates/FormLayout';
 import { failedSwal, successSwal, validateEmployee } from '../../helper';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import LoadingSpinner from '../elements/loading';
 
-function EmployeeFormPage({ setErrors, setEditingEmployee, setDepartments, editingEmployee, departments, errors, setRefresh, refresh }) {
+function EmployeeFormPage({ setErrors, setEditingEmployee, setDepartments, editingEmployee, departments, errors}) {
     const { id } = useParams();
+    const navigate = useNavigate()
     const [loading, setLoading] = useState(true);
+    const [shouldNavigate, setShouldNavigate]=useState();
     const [errorStatus, setErrorStatus] = useState();
 
     const addEmployee = async (employee) => {
@@ -18,7 +20,6 @@ function EmployeeFormPage({ setErrors, setEditingEmployee, setDepartments, editi
             if (Object.keys(listErrors).length === 0) {
                 await axios.post('http://localhost:5227/Employee', employee)
                 successSwal('Employee Added successfully');
-                setRefresh(!refresh);
             }
             return listErrors;
 
@@ -38,7 +39,6 @@ function EmployeeFormPage({ setErrors, setEditingEmployee, setDepartments, editi
                 employee.empNo = parseInt(employee.empNo);
                 await axios.put(`http://localhost:5227/Employee/${id}`, employee)
                 successSwal('Employee Edited successfully');
-                setRefresh(!refresh);
                 setEditingEmployee(null);
             }
             return listErrors;
@@ -74,6 +74,12 @@ function EmployeeFormPage({ setErrors, setEditingEmployee, setDepartments, editi
         loadData();
     }, [id, setDepartments, setEditingEmployee, setErrorStatus]);
 
+    useEffect(()=>{
+        if (shouldNavigate) {
+            navigate('/employees');
+        }
+    }, [shouldNavigate, navigate])
+
     if (loading) return <LoadingSpinner />;
     if (errorStatus) return <p>Error loading employees</p>;
 
@@ -85,6 +91,8 @@ function EmployeeFormPage({ setErrors, setEditingEmployee, setDepartments, editi
                 updateEmployee={updateEmployee}
                 editingEmployee={editingEmployee}
                 errors={errors}
+                shouldNavigate={shouldNavigate}
+                setShouldNavigate={setShouldNavigate}
             />
         </FormLayout>
     )

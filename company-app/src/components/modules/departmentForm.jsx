@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import InputField from '../widgets/inputField';
 import Button from '../elements/button';
-import { useNavigate } from 'react-router-dom';
 import SelectField from '../widgets/selectField';
 
-const DepartmentForm = ({ addDepartment, updateDepartment, editingDepartment,employees, errors, refresh, setRefresh }) => {
-    const navigate = useNavigate();
-    const [shouldNavigate, setShouldNavigate] =useState(false);
+const DepartmentForm = ({ addDepartment, updateDepartment, editingDepartment, employees, errors, shouldNavigate, setShouldNavigate }) => {
     const [formData, setFormData] = useState({
         deptName: '',
         mgrEmpNo: ''
@@ -36,33 +33,20 @@ const DepartmentForm = ({ addDepartment, updateDepartment, editingDepartment,emp
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            if (editingDepartment) {
-                const result = await updateDepartment(formData);
-                if (!errors && Object.keys(result).length === 0) {
-                    setFormData({ deptName: '', mgrEmpNo: '' });
-                    setRefresh(!refresh);
-                    setShouldNavigate(true);
-                }
-            } else {
-                const result = await addDepartment(formData);
-                if (!errors && Object.keys(result).length === 0) {
-                    setFormData({ deptName: '', mgrEmpNo: '' });
-                    setRefresh(!refresh);
-                    setShouldNavigate(true);
-                }
+        if (editingDepartment) {
+            const result = await updateDepartment(formData);
+            if (Object.keys(result).length === 0) {
+                setFormData({ deptName: '', mgrEmpNo: '' });
+                setShouldNavigate(!shouldNavigate);
             }
-        } catch (error) {
-            console.error(error);
+        } else {
+            const result = await addDepartment(formData);
+            if (Object.keys(result).length === 0) {
+                setFormData({ deptName: '', mgrEmpNo: '' });
+                setShouldNavigate(!shouldNavigate);
+            }
         }
     };
-    
-    useEffect(() => {
-        if (shouldNavigate) {
-            navigate('/departments');
-            setShouldNavigate(false); // Reset state setelah navigasi
-        }
-    }, [shouldNavigate, navigate]);
 
     return (
         <>
@@ -80,10 +64,10 @@ const DepartmentForm = ({ addDepartment, updateDepartment, editingDepartment,emp
                     id="mgrEmpNo"
                     options={employees}
                     value={formData.mgrEmpNo}
-                    labelKey={ ["fname", "lname"]}
+                    labelKey={["fname", "lname"]}
                     valueKey={'empNo'}
                     optionTitle={'Choose Manager'}
-                    onChange={(e) => handleInputChange(e,'mgrEmpNo')}
+                    onChange={(e) => handleInputChange(e, 'mgrEmpNo')}
                     className="form-select"
                 />
                 {errors?.mgrEmpNo ? <h6 className='text-start'>{errors.mgrEmpNo}</h6> : ''}
